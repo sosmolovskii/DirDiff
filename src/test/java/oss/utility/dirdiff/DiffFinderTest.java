@@ -13,6 +13,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
+import static java.util.Objects.nonNull;
+
 @RunWith(Theories.class)
 public class DiffFinderTest extends Assert {
 
@@ -53,7 +55,10 @@ public class DiffFinderTest extends Assert {
 
     private void checkDiff(List<String> diffFileNames) {
 
-        Set<String> files = Set.of(folderForDiff.getRoot().list());
+        Set<String> files =
+                nonNull(folderForDiff) && nonNull(folderForDiff.getRoot()) && nonNull(folderForDiff.getRoot().list())
+                        ? Set.of(folderForDiff.getRoot().list())
+                        : Set.of();
 
         diffFileNames.forEach((String fileName) -> {
             assertFalse("There are not file:" + fileName + " in diffDir", files.contains(fileName));
