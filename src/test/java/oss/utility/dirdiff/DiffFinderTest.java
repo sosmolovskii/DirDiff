@@ -10,6 +10,7 @@ import org.junit.runner.RunWith;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -31,7 +32,8 @@ public class DiffFinderTest extends Assert {
     public static List<List<List<String>>> testDirContent() {
 
         return List.of(
-                List.of(List.of(), List.of(), List.of())
+                List.of(List.of(), List.of(), List.of()),
+                List.of(List.of("1"), List.of(), List.of("1"))
 
         );
     }
@@ -55,13 +57,13 @@ public class DiffFinderTest extends Assert {
 
     private void checkDiff(List<String> diffFileNames) {
 
-        Set<String> files =
-                nonNull(folderForDiff) && nonNull(folderForDiff.getRoot()) && nonNull(folderForDiff.getRoot().list())
-                        ? Set.of(folderForDiff.getRoot().list())
-                        : Set.of();
+        Set<String> files = new HashSet<>();
+        if (nonNull(folderForDiff) && nonNull(folderForDiff.getRoot()) && nonNull(folderForDiff.getRoot().list())) {
+            files.addAll(Set.of(folderForDiff.getRoot().list()));
+        }
 
         diffFileNames.forEach((String fileName) -> {
-            assertFalse("There are not file:" + fileName + " in diffDir", files.contains(fileName));
+            assertTrue("There are not file:" + fileName + " in diffDir", files.contains(fileName));
             files.remove(fileName);
         });
 
